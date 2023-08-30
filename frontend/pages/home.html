@@ -42,12 +42,47 @@
         <div class="row justify-content-center my-5">
             <div class="col-md-6 offset-md-3">
                 <!-- Botón para Agregar Nota -->
-                <button class="btn btn-primary btn-lg btn-block">Agregar Nueva Nota</button>
+                <button class="btn btn-primary btn-lg btn-block" data-bs-toggle="modal"
+                    data-bs-target="#modalNuevaNota">Agregar Nueva Nota</button>
+            </div>
+            <div class="col-md-6 offset-md-3">
+                <!-- Botón para Agregar Nota -->
+                <button id="botonTest" class="btn btn-primary btn-lg btn-block">Test Nueva Nota</button>
             </div>
         </div>
         <!-- Tarjetas de Notas -->
         <div class="row mt-5" id="notaContainer">
             <!-- Las tarjetas de notas se agregarán aquí dinámicamente -->
+        </div>
+    </div>
+
+    <!-- Modal para Agregar Nueva Nota -->
+    <div class="modal fade" id="modalNuevaNota" tabindex="-1" aria-labelledby="modalNuevaNotaLabel" aria-hidden="true"
+        data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content bg-dark text-white">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalNuevaNotaLabel">Nueva Nota</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- Formulario para ingresar título y contenido -->
+                    <form id="formularioNuevaNota">
+                        <div class="mb-3">
+                            <label for="titulo" class="form-label text-white">Título</label>
+                            <input type="text" class="form-control" id="titulo" name="titulo" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="contenido" class="form-label text-white">Contenido</label>
+                            <textarea class="form-control" id="contenido" name="contenido" rows="4" required></textarea>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" id="guardarNota">Guardar</button>
+                </div>
+            </div>
         </div>
     </div>
 

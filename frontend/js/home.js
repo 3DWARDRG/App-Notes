@@ -1,3 +1,6 @@
+//const note = document.querySelector('#modalNuevaNota');
+const boton = document.querySelector('#botonTest');
+
 // Simulación de datos de notas desde una API
 const notas = [
     {
@@ -49,6 +52,46 @@ function mostrarNotas() {
     });
 }
 
+function generarID() {
+    return Math.random().toString(36).substring(2, 15);
+}
+
+function crearNotaNueva(event) {
+    // Obtén los valores del título y contenido desde la modal
+    /* const titulo = document.querySelector('#titulo').value;
+    const contenido = document.querySelector('#contenido').value; */
+    const titulo = "titulo";
+    const contenido = "Dummy contenido";
+
+    // Luego, puedes usar esta función para obtener un nuevo ID único
+    const nuevoID = generarID();
+
+    // Crea un objeto con los datos de la nota
+    const nuevaNota = {
+        id: nuevoID,
+        titulo: titulo,
+        contenido: contenido
+    };
+
+    console.log(nuevaNota)
+
+    fetch("http://127.0.0.1:3002/notes/create", {
+        method: "POST",
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(nuevaNota),
+        credentials: 'same-origin' // Agrega esta línea
+    })
+        .then(response => response.json())
+        .then(data => {
+            console.log(data);
+        })
+        .catch(error => {
+            console.error('Error al enviar la nota:', error);
+        })
+}
+
 // Llama a la función para mostrar las notas al cargar la página
 mostrarNotas();
 
@@ -60,3 +103,6 @@ function editarNota(id) {
 function eliminarNota(id) {
     alert("Eliminar nota con ID " + id);
 }
+
+boton.addEventListener("click", crearNotaNueva);
+//note.addEventListener("click", crearNotaNueva)

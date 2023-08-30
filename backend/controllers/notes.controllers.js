@@ -1,3 +1,4 @@
+const Note = require('../models/Notes')
 /* Contentradas las funciones que controlen operaciones con las notas */
 const notesController = {};
 
