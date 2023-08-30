@@ -37,4 +37,16 @@ notesController.createNewNote = async (req, res) => {
     }
 }
 
+notesController.getAllNotes = async (req, res) => {
+    try {
+        const notes = await Note.find({})//SELECT * FROM table 
+
+        console.log(notes);
+        res.json(notes || []);
+    } catch (error) {
+        console.error('Error al obtener notas:', error);
+        res.status(500).json({ error: 'Error al obtener notas' });
+    }
+}
+
 module.exports = notesController

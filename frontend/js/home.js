@@ -2,7 +2,8 @@
 const boton = document.querySelector('#botonTest');
 
 // Simulación de datos de notas desde una API
-const notas = [
+
+/* const notas = [
     {
         id: 1,
         titulo: "Nota 1",
@@ -23,11 +24,37 @@ const notas = [
         titulo: "Nota 4",
         contenido: "Contenido largo de la cuarta nota que se truncará con tres puntos suspensivos al final."
     }
-];
+]; */
 
-// Función para crear y mostrar tarjetas de notas
-function mostrarNotas() {
+// Función para obtener y mostrar las notas desde la API
+function obtenerNotasDesdeAPI() {
+    // Realiza una solicitud GET a la API para obtener las notas
+    fetch("http://localhost:3002/notes", {
+        method: 'GET',
+        headers: {
+            "Accept": "*/*",
+            'Content-Type': 'application/json'
+        },
+        credentials: 'same-origin' // Agrega esta línea si es necesario
+    })
+        .then(response => response.json())
+        .then(notasDesdeAPI => {
+            // Llama a la función para mostrar las notas en la interfaz
+            mostrarNotas(notasDesdeAPI);
+        })
+        .catch(error => {
+            console.error('Error al obtener las notas desde la API:', error);
+            // Puedes mostrar un mensaje de error al usuario, si es necesario
+        });
+}
+
+// Función para mostrar las notas en la interfaz
+function mostrarNotas(notas) {
+    console.log(notas);
     const notaContainer = document.getElementById("notaContainer");
+
+    // Limpia el contenido actual del contenedor de notas
+    notaContainer.innerHTML = '';
 
     notas.forEach(nota => {
         const colDiv = document.createElement("div");
@@ -93,7 +120,7 @@ function crearNotaNueva(event) {
 }
 
 // Llama a la función para mostrar las notas al cargar la página
-mostrarNotas();
+obtenerNotasDesdeAPI();
 
 // Funciones de edición y eliminación (puedes personalizar estas funciones)
 function editarNota(id) {

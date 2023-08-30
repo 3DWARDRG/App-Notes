@@ -1,16 +1,21 @@
 /* Inicializa y configura el servidor de express */
 
+/* Importar modulos en Node */
 const express = require('express');
 //politicas CORS de cross origin (permite comunicación desde la misma IP)
 const cors = require('cors');
 
 
+
 /* Inicialización */
 const app = express();
+
 app.use(cors());
 
 /* Configuración inicial */
 app.set('port', process.env.PORT || 3002);
+
+
 
 /* Middleware */
 app.use(express.urlencoded({ extended: true }));
