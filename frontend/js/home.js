@@ -1,122 +1,222 @@
 //const note = document.querySelector('#modalNuevaNota');
-const boton = document.querySelector('#botonTest');
+const myModal = document.querySelector("#modalM");
+//Token de autorizacion de usuario Autenticado
+const token = localStorage.getItem("token");
+// Nombre del Usuario que ingreso
+const username = localStorage.getItem("username");
+// Contenedor de Notas
+const notaContainer = document.getElementById("notaContainer");
+// Elemento de dom donde directamente aplico el valor del usuario que ingreso
+const user = (document.querySelector(".nav-link").textContent = username);
+// Boton crear/Actualizar del modal
+const buttonSubmitModal= document.querySelector('#modalbutton')
+//Formulario del modal
+const formSubmitModal= document.querySelector('.formModal')
 
-// Simulación de datos de notas desde una API
 
-/* const notas = [
-    {
-        id: 1,
-        titulo: "Nota 1",
-        contenido: "Contenido largo de la primera nota que se truncará con tres puntos suspensivos al final. Contenido largo de la primera nota que se truncará con tres puntos suspensivos al final. Contenido largo de la primera nota que se truncará con tres puntos suspensivos al final."
-    },
-    {
-        id: 2,
-        titulo: "Nota 2",
-        contenido: "Contenido largo de la segunda nota que se truncará con tres puntos suspensivos al final. Contenido largo de la segunda nota que se truncará con tres puntos suspensivos al final. Contenido largo de la segunda nota que se truncará con tres puntos suspensivos al final."
-    },
-    {
-        id: 3,
-        titulo: "Nota 3",
-        contenido: "Contenido largo de la tercera nota que se truncará con tres puntos suspensivos al final. Contenido largo de la tercera nota que se truncará con tres puntos suspensivos al final. Contenido largo de la tercera nota que se truncará con tres puntos suspensivos al final."
-    },
-    {
-        id: 4,
-        titulo: "Nota 4",
-        contenido: "Contenido largo de la cuarta nota que se truncará con tres puntos suspensivos al final."
-    }
-]; */
+
+// Eventos del formulario
+const methodCreate=function(event){
+  event.preventDefault() 
+  const newData = Object.fromEntries(new FormData(event.target));
+  console.log(newData);
+  console.log("CREADO")}
+const methodUpdate= function(event){
+  event.preventDefault() 
+  const newData = Object.fromEntries(new FormData(event.target));
+  console.log(newData);
+  console.log("ACTUALIZADO")}
+
+
+
+// Manejador del evento show o mostrar el modal
+myModal.addEventListener("show.bs.modal", function (event) {
+  // Obtener el botón que activó el modal
+  const buttonEvent = event.relatedTarget;
+  // Obtener el valor del atributo "data-action"
+  const action = buttonEvent.getAttribute("data-action");
+// Titulo del modal
+  const modalTitle = document.querySelector("#modalMLabel");
+  // Determinar si el modal es para crear o actualizar una nota
+  if (action === "create") {
+    // El modal es para crear una nota
+
+    // Titulo del modal para crear una nota
+    modalTitle.textContent = "Crear nota";
+    // Boton de crear carta/Cambiarndo el texto
+    buttonSubmitModal.textContent = "Crear";
+    // Cambiamos y/o agregamos el atributo +form+ para generar el submit en el formulario
+    buttonSubmitModal.setAttribute('form','createForm')
+    // Añadimos el id al formulario del modal para poder manipularlo
+    formSubmitModal.setAttribute('id', 'createForm');
+    // Seleccionamos el modal por si ID
+    const create=document.querySelector('#createForm')
+    console.log(create)
+// Añadimos el listener//escuchador de eventos para manejar el evento submit
+create.addEventListener("submit", methodCreate);
+
+    console.log("crear");
+  } else if (action === "update") {
+    // El modal es para actualizar una nota
+
+    // Titulo del modal para crear una nota
+    modalTitle.textContent = "Actualizar nota";
+    // Boton de crear carta/Cambiarndo el texto
+    buttonSubmitModal.textContent = "Actualizar";
+    // Cambiamos y/o agregamos el atributo +form+ para generar el submit en el formulario
+    buttonSubmitModal.setAttribute('form','updateForm')
+    // Añadimos el id al formulario del modal para poder manipularlo
+    formSubmitModal.setAttribute('id', 'updateForm');    
+   // Seleccino el elemento padre de boton que activo modal // modal-footer
+    const cardFooter= buttonEvent.parentElement;
+   // Seleccino el elemento padre de boton que activo modal // modal-footer/modal
+    const cardContent = cardFooter.parentElement;
+
+
+    // Obtener los valores que queremos extraer
+    // Titulo de la carta Nota
+    const titleElement = cardContent.querySelector(".card-title").textContent;
+    // Descripcion de la carta Nota
+    const textElement = cardContent.querySelector(".card-text").textContent;
+
+
+    // Obtener una referencia a los elementos a mostrar 
+    // Input Titulo
+    const titleNoteModal = document.querySelector("#titulo").value=titleElement;
+    // Textarea Descripcion
+    const textNoteModal = document.querySelector("#contenido").value=textElement;
+
+    // Seleccionamos el modal por su ID
+  const update= document.querySelector('#updateForm')
+  console.log(update)
+// Asignamos el escuchador de eventos para controlar su evento submit
+  update.addEventListener("submit", methodUpdate);
+
+  }
+});
+
+myModal.addEventListener("hidden.bs.modal", function (event) {
+
+  event.preventDefault()
+  // Obtener una referencia a los elementos en el modal cuyos valores deseas borrar
+  var titleElement = document.querySelector("#titulo");
+  var textElement = document.querySelector("#contenido");
+
+  // Establecer los valores de los elementos en una cadena vacía
+  titleElement.value = "";
+  textElement.value = "";
+
+  const create=document.querySelector('#createForm')
+  const update= document.querySelector('#updateForm')
+  console.log(create)
+
+  if(create!==null){
+    console.log("evento crear eliminado")
+    create.removeEventListener("submit", methodCreate);
+  }
+
+
+
+  else if(update!==null){
+    console.log("evento actualizar eliminado")
+    update.removeEventListener("submit", methodUpdate);
+  }
+  console.log(update)
+});
 
 // Función para obtener y mostrar las notas desde la API
 function obtenerNotasDesdeAPI() {
-    // Realiza una solicitud GET a la API para obtener las notas
-    fetch("http://localhost:3002/notes", {
-        method: 'GET',
-        headers: {
-            "Accept": "*/*",
-            'Content-Type': 'application/json'
-        },
-        credentials: 'same-origin' // Agrega esta línea si es necesario
+  // Realiza una solicitud GET a la API para obtener las notas
+  fetch("http://localhost:3000/notes", {
+    method: "GET",
+    headers: { token: `${token}` },
+  })
+    .then((response) => response.json())
+    .then((notasDesdeAPI) => {
+      // Llama a la función para mostrar las notas en la interfaz
+      mostrarNotas(notasDesdeAPI);
     })
-        .then(response => response.json())
-        .then(notasDesdeAPI => {
-            // Llama a la función para mostrar las notas en la interfaz
-            mostrarNotas(notasDesdeAPI);
-        })
-        .catch(error => {
-            console.error('Error al obtener las notas desde la API:', error);
-            // Puedes mostrar un mensaje de error al usuario, si es necesario
-        });
+    .catch((error) => {
+      console.error("Error al obtener las notas desde la API:", error);
+      // Puedes mostrar un mensaje de error al usuario, si es necesario
+    });
 }
-
 // Función para mostrar las notas en la interfaz
 function mostrarNotas(notas) {
-    console.log(notas);
-    const notaContainer = document.getElementById("notaContainer");
+  // Limpia el contenido actual del contenedor de notas
+  notaContainer.innerHTML = "";
+  console.log(notas);
+  console.log(notas.length);
+  if (notas.length === undefined) {
+    const colDiv = document.createElement("div");
+    colDiv.classList.add("col-md-3");
 
-    // Limpia el contenido actual del contenedor de notas
-    notaContainer.innerHTML = '';
+    const cardHTML = `
+      <div class="card mb-4" id="cardNote">
+      <div class="card-body overflow-hidden">
+          <h5 class="card-title">${notas.titulo}</h5>
+          <p class="card-text">${notas.contenido}</p>
+      </div>
+      <div class="card-footer text-right border-0">
+          <button class="btn btn-primary mr-2" data-action="update" data-bs-toggle="modal"
+          data-bs-target="#modalM">Editar</button>
+          <button class="btn btn-danger" data-action="delete">Eliminar</button>
+      </div>
+  </div>
+  
+      `;
 
-    notas.forEach(nota => {
-        const colDiv = document.createElement("div");
-        colDiv.classList.add("col-md-3");
+    colDiv.innerHTML = cardHTML;
+    notaContainer.appendChild(colDiv);
+    return location.reload();
+  }
+  notas.forEach((nota) => {
+    const colDiv = document.createElement("div");
+    colDiv.classList.add("col-md-3");
 
-        const cardHTML = `
-        <div class="card mb-4">
+    const cardHTML = `
+        <div class="card mb-4" id="cardNote">
         <div class="card-body overflow-hidden">
             <h5 class="card-title">${nota.titulo}</h5>
             <p class="card-text">${nota.contenido}</p>
         </div>
         <div class="card-footer text-right border-0">
-            <button class="btn btn-primary mr-2" onclick="editarNota(${nota.id})">Editar</button>
-            <button class="btn btn-danger" onclick="eliminarNota(${nota.id})">Eliminar</button>
+            <button class="btn btn-primary mr-2" data-action="update" data-bs-toggle="modal"
+            data-bs-target="#modalM">Editar</button>
+            <button class="btn btn-danger" data-action="delete">Eliminar</button>
         </div>
     </div>
     
         `;
 
-        colDiv.innerHTML = cardHTML;
-        notaContainer.appendChild(colDiv);
-    });
-}
-
-function generarID() {
-    return Math.random().toString(36).substring(2, 15);
+    colDiv.innerHTML = cardHTML;
+    notaContainer.appendChild(colDiv);
+  });
 }
 
 function crearNotaNueva(event) {
-    // Obtén los valores del título y contenido desde la modal
-    /* const titulo = document.querySelector('#titulo').value;
-    const contenido = document.querySelector('#contenido').value; */
-    const titulo = "titulo";
-    const contenido = "Dummy contenido";
+  event.preventDefault();
 
-    // Luego, puedes usar esta función para obtener un nuevo ID único
-    const nuevoID = generarID();
+  const newData = Object.fromEntries(new FormData(event.target));
 
-    // Crea un objeto con los datos de la nota
-    const nuevaNota = {
-        id: nuevoID,
-        titulo: titulo,
-        contenido: contenido
-    };
+  console.log(newData);
+  console.log(token);
 
-    console.log(nuevaNota)
-
-    fetch("http://127.0.0.1:3002/notes/create", {
-        method: "POST",
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(nuevaNota),
-        credentials: 'same-origin' // Agrega esta línea
+  fetch("http://localhost:3000/notes/add", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      token: `${token}`,
+    },
+    body: JSON.stringify(newData),
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      mostrarNotas(data);
     })
-        .then(response => response.json())
-        .then(data => {
-            console.log(data);
-        })
-        .catch(error => {
-            console.error('Error al enviar la nota:', error);
-        })
+    .catch((error) => {
+      console.error("Error al enviar la nota:", error);
+    });
 }
 
 // Llama a la función para mostrar las notas al cargar la página
@@ -124,12 +224,14 @@ obtenerNotasDesdeAPI();
 
 // Funciones de edición y eliminación (puedes personalizar estas funciones)
 function editarNota(id) {
-    alert("Editar nota con ID " + id);
+  alert("Editar nota con ID " + id);
 }
 
 function eliminarNota(id) {
-    alert("Eliminar nota con ID " + id);
+  alert("Eliminar nota con ID " + id);
 }
 
-boton.addEventListener("click", crearNotaNueva);
+
+
+
 //note.addEventListener("click", crearNotaNueva)

@@ -1,9 +1,11 @@
+const Notes = require('../models/Notes');
 const Note = require('../models/Notes')
 /* Contentradas las funciones que controlen operaciones con las notas */
 const notesController = {};
 
 notesController.rootGet = (req, res) => {
     res.send("Hola mundo")
+    console.log(req.user)
 }
 
 notesController.createNewNote = async (req, res) => {
@@ -17,20 +19,20 @@ notesController.createNewNote = async (req, res) => {
         }
 
         // Obtén los datos de la nota del cuerpo de la solicitud
-        const { id, titulo, contenido } = req.body;
-
+        const { titulo, contenido } = req.body;
+        console.log(req.body)
+        console.log(req.user.id)
         // Crea una nueva instancia del modelo de nota
         const nuevaNota = new Note({
-            id,
             titulo,
             contenido,
+            user: req.user.id
         });
-
+        console.log(nuevaNota)
         // Guarda la nueva nota en la base de datos
         const notaGuardada = await nuevaNota.save();
-
         // Envía la nota guardada como respuesta en formato JSON
-        res.json(notaGuardada);
+        res.json(notaGuardada || []);
     } catch (error) {
         console.error('Error al crear la nota:', error);
         res.status(500).json({ error: 'Error al crear la nota' });
@@ -39,14 +41,17 @@ notesController.createNewNote = async (req, res) => {
 
 notesController.getAllNotes = async (req, res) => {
     try {
-        const notes = await Note.find({})//SELECT * FROM table 
-
-        console.log(notes);
-        res.json(notes || []);
+        const notes = await Note.find({user:req.user.id})//SELECT * FROM table 
+        console.log(notes)
+        res.status(200).json(notes || []);
     } catch (error) {
         console.error('Error al obtener notas:', error);
         res.status(500).json({ error: 'Error al obtener notas' });
     }
 }
+
+
+
+
 
 module.exports = notesController
