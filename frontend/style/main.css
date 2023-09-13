@@ -1,18 +1,21 @@
 body {
-    background-color: #333;
+    background-color: #000000;
     /* Color de fondo oscuro */
     font-family: Arial, sans-serif;
     /* Tipo de letra serio y formal */
+
 }
 
 .container {
-    background-color: #222;
+    background-color: #ffffff00;
     /* Color de fondo del contenedor */
     padding: 20px;
     border-radius: 5px;
     box-shadow: 0px 0px 10px rgba(255, 255, 255, 0.2);
     /* Sombra elegante */
+
 }
+
 
 h2 {
     text-align: center;
